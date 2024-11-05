@@ -1,24 +1,26 @@
 const express = require("express");
-const path = require("path");
 
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
-// Serve the index.html file
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
+// Define the custom application root from environment variables
+const applicationRoot = process.env.SCRIPT_NAME || "/";
 
-// Listening on port 8080
+// Create a router to handle all routes under applicationRoot
+const router = express.Router();
+
+// Mount the router at applicationRoot
+app.use(applicationRoot, router);
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
 
-// API routes
-app.get("/api/hello", (req, res) => {
-  res.json({ message: "Hello, world!" });
+// Serve the main route
+router.get("/", (req, res) => {
+  res.send("My Basic Custom App");
 });
 
-app.get("/api/items", (req, res) => {
-  res.json({ message: "Items route" });
+router.get("/api", (req, res) => {
+  res.json({ message: "Hello, world!" });
 });
